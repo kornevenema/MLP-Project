@@ -5,7 +5,8 @@ Rijksuniversiteit Groningen.
 ### instructions for data 
 After pulling this repository, please download the train and test data from
 https://www.kaggle.com/koryakinp/fingers and place the test and train 
-directory into the data folder. The MLP-directory should then look like:
+directory into the data folder. The MLP-Project directory should then look 
+like:
 ```
 MLP-Project
 |   .gitignore
