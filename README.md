@@ -21,5 +21,19 @@ MLP-Project
 
 The main.py should then print the number of files of that directory.
 
+## preprocessing
+Labels:
+```
+[['1' 'L']
+ ['4' 'L']
+ ['2' 'R']
+ ['6' 'L']
+ ['5' 'R']]
+```
+Images:
+Numpy array with an image per row and images in 1 numpy array.
+
 ### updates 
-**23-03-2022** changed the folder name from data to fingers
+**23-03-2022** changed the folder name from data to fingers 
+
+**23-03-2022** created preprocessing file
