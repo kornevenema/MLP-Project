@@ -10,10 +10,16 @@ def cnn_single():
     train_labels = np.load('labels/train_classes.npy')
     test_labels = np.load('labels/test_classes.npy')
 
+    train_labels = train_labels[:, 2]
+    test_labels = test_labels[:, 2]
+
     cnn = SingleOutputCNN(32)
     cnn.add_layers()
     cnn.add_outputs()
     cnn.model.summary()
+    cnn.compile(loss='sparse_categorical_crossentropy', metrics='accuracy')
+    cnn.train(train_images, train_labels, test_images, test_labels, 2)
+    cnn.evaluate(test_images, test_labels)
     print('testing')
 
 
