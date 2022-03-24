@@ -17,8 +17,8 @@ def get_labels():
 
     # create test and train labels
     for t in ["test", "train"]:
-        print(f"getting labels from {t} images")
         if not os.path.isfile(f"labels/{t}_classes.npy"):
+            print(f"getting labels from {t} images")
             labels = [list(item[:-4].split("_")[-1])
                       for item in os.listdir(f"fingers/{t}")]
             np.save(f'labels/{t}_classes.npy', labels)
@@ -51,9 +51,3 @@ def test():
         np.load("fingers/test_preprocessed.npy").shape))
     print("size of test images preprocessed: {0}".format(
         np.load("fingers/train_preprocessed.npy").shape))
-
-
-if __name__ == '__main__':
-    get_labels()
-    pre_process_images()
-    test()
