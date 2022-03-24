@@ -5,6 +5,7 @@ from numpy.typing import ArrayLike
 import tensorflow as tf
 from tensorflow.python.keras import layers, models
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class CommonModel:
@@ -45,6 +46,17 @@ class CommonModel:
 
     def load(self):
         self.model = models.load_model(self.save_location)
+
+    def confusion_matrix(self, test_images: ArrayLike, test_labels: Union[ArrayLike, dict]):
+        y_pred = self.model.predict_classes(test_images)
+        conf_matr = tf.math.confusion_matrix(labels=test_labels,
+                                             predictions=y_pred)
+        figure = plt.figure(figsize=conf_matr.shape)
+        sns.heatmap(conf_matr, annot=True, cmap=plt.cm.Blues)
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        plt.show()
 
     @abc.abstractmethod
     def add_outputs(self):
