@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import os
+from sklearn.preprocessing import LabelEncoder
 
 
 def get_labels():
@@ -19,9 +20,19 @@ def get_labels():
     for t in ["test", "train"]:
         if not os.path.isfile(f"labels/{t}_classes.npy"):
             print(f"getting labels from {t} images")
-            labels = [list(item[:-4].split("_")[-1])
-                      for item in os.listdir(f"fingers/{t}")]
-            np.save(f'labels/{t}_classes.npy', labels)
+            fingers =[]
+            hand = []
+            both = []
+            for item in os.listdir(f"fingers/{t}"):
+                item = item[:-4].split("_")[-1]
+                both.append(item)
+                fingers.append(list(item)[0])
+                hand.append(list(item)[1])
+            fingers = LabelEncoder().fit(fingers).transform(fingers)
+            hand = LabelEncoder().fit(hand).transform(hand)
+            both = LabelEncoder().fit(both).transform(both)
+            out = np.column_stack((fingers, hand, both))
+            np.save(f'labels/{t}_classes.npy', out)
         else:
             print(f"{t} labels already exist")
             continue
