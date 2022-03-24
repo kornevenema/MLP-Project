@@ -8,13 +8,15 @@ def svm_single_output():
     # Opens labels and images and runs svm for 12 labels
     train_data = np.load("fingers/train_preprocessed.npy")
     test_data = np.load("fingers/test_preprocessed.npy")
-    train_labels = np.load("fingers/test_preprocessed.npy")
-    test_labels = np.load("fingers/train_preprocessed.npy")
+    train_labels = np.load("labels/train_classes.npy")
+    test_labels = np.load("labels/test_classes.npy")
     flat_test_data = np.array([d.flatten() for d in test_data])
     flat_train_data = np.array([d.flatten() for d in train_data])
     # print(flat_test_data.shape)
     svm = svm_baseline()
-    # svm.fit(train_data, train_labels)
+    svm.fit(flat_train_data, train_labels[:, 2])
+    svm.predict(flat_test_data)
+    print(svm.report_scores(test_labels[:, 2]))
 
 
 def main():

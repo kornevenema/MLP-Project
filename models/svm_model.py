@@ -1,6 +1,7 @@
 import abc
 from sklearn import svm, metrics
 
+
 class svm_baseline:
 
     def __init__(self, kernel="linear", **kwargs):
