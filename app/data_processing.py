@@ -33,8 +33,7 @@ def pre_process_images():
         if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
             print(f"preprocessing {t} images...")
             np.save(f"fingers/{t}_preprocessed.npy", np.array([
-                np.array(Image.open(f"fingers/{t}/{file}").resize(
-                    (32, 32))).flatten()
+                np.array(Image.open(f"fingers/{t}/{file}").resize((32, 32)))
                 for file in os.listdir(f"fingers/{t}")
             ]))
         else:
@@ -51,3 +50,11 @@ def test():
         np.load("fingers/test_preprocessed.npy").shape))
     print("size of test images preprocessed: {0}".format(
         np.load("fingers/train_preprocessed.npy").shape))
+
+
+def delete_old_files():
+    os.remove('labels/test_classes.npy')
+    os.remove('labels/train_classes.npy')
+    os.remove('fingers/test_preprocessed.npy')
+    os.remove('fingers/train_preprocessed.npy')
+    return 'Files removed'
