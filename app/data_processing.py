@@ -44,7 +44,7 @@ def pre_process_images():
         if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
             print(f"preprocessing {t} images...")
             np.save(f"fingers/{t}_preprocessed.npy", np.array([
-                np.array(Image.open(f"fingers/{t}/{file}").resize((32, 32)))
+                np.array(Image.open(f"fingers/{t}/{file}").resize((32, 32)).convert("RGB"))
                 for file in os.listdir(f"fingers/{t}")
             ]))
         else:
@@ -59,7 +59,7 @@ def test():
         np.load("labels/train_classes.npy").shape))
     print("size of test images preprocessed: {0}".format(
         np.load("fingers/test_preprocessed.npy").shape))
-    print("size of test images preprocessed: {0}".format(
+    print("size of train images preprocessed: {0}".format(
         np.load("fingers/train_preprocessed.npy").shape))
 
 
