@@ -18,7 +18,7 @@ class CommonModel(abc.ABC):
         self.image_size = image_size
         self.optimizer = optimizer
         self.save_location: str
-        self.input_layer = layers.Input(shape=(self.image_size, self.image_size, 1))
+        self.input_layer = layers.Input(shape=(self.image_size, self.image_size, 3))
 
     def add_layers(self):
         _ = layers.Conv2D(32, (3, 3), activation='relu')(self.input_layer)
@@ -41,8 +41,7 @@ class CommonModel(abc.ABC):
                        validation_data=(test_images, test_labels))
 
     def evaluate(self, test_images: ArrayLike, test_labels: Union[ArrayLike, dict]):
-        loss, acc = self.model.evaluate(test_images, test_labels, verbose=2)
-        return loss, acc
+        return self.model.evaluate(test_images, test_labels, verbose=2)
 
     def save(self):
         self.model.save(self.save_location)
