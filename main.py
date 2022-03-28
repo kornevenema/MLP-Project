@@ -1,7 +1,47 @@
 import os
 import numpy as np
 import app.data_processing as dp
+from models.cnn_multi_output import MultiOutputCNN
+from models.cnn_single_output import SingleOutputCNN
 from models.svm_model import svm_baseline
+
+def cnn_multi():
+    train_images = np.load('fingers/train_preprocessed.npy')
+    test_images = np.load('fingers/test_preprocessed.npy')
+    train_labels = np.load('labels/train_classes.npy')
+    test_labels = np.load('labels/test_classes.npy')
+
+    train_num_labels = train_labels[:, 0]
+    train_hand_labels = train_labels[:, 1]
+    test_num_labels = test_labels[:, 0]
+    test_hand_labels = test_labels[:, 1]
+
+    cnn = MultiOutputCNN(32)
+    cnn.add_layers()
+    cnn.add_outputs()
+    cnn.model.summary()
+    cnn.compile(loss={'num': 'sparse_categorical_crossentropy', 'hand': 'sparse_categorical_crossentropy'}, metrics={'num': 'accuracy', 'hand': 'accuracy'})
+    cnn.train(train_images, {'num': train_num_labels, 'hand': train_hand_labels}, test_images, {'num': test_num_labels, 'hand': test_hand_labels}, 2)
+    cnn.evaluate(test_images, {'num': test_num_labels, 'hand': test_hand_labels})
+
+
+def cnn_single():
+    train_images = np.load('fingers/train_preprocessed.npy')
+    test_images = np.load('fingers/test_preprocessed.npy')
+    train_labels = np.load('labels/train_classes.npy')
+    test_labels = np.load('labels/test_classes.npy')
+
+    train_labels = train_labels[:, 2]
+    test_labels = test_labels[:, 2]
+
+    cnn = SingleOutputCNN(32)
+    cnn.add_layers()
+    cnn.add_outputs()
+    cnn.model.summary()
+    cnn.compile(loss='sparse_categorical_crossentropy', metrics='accuracy')
+    cnn.train(train_images, train_labels, test_images, test_labels, 2)
+    cnn.evaluate(test_images, test_labels)
+    print('testing')
 
 
 def flatten_data():
@@ -48,6 +88,8 @@ def main():
     dp.get_labels()
     dp.pre_process_images()
     dp.test()
+    # cnn_single()
+    cnn_multi()
 
     train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
     # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
