@@ -1,5 +1,7 @@
+import random
+
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 import matplotlib.pyplot as plt
 import os
 from sklearn.preprocessing import LabelEncoder
@@ -20,7 +22,7 @@ def get_labels():
     for t in ["test", "train"]:
         if not os.path.isfile(f"labels/{t}_classes.npy"):
             print(f"getting labels from {t} images")
-            fingers =[]
+            fingers = []
             hand = []
             both = []
             for item in os.listdir(f"fingers/{t}"):
@@ -44,9 +46,45 @@ def pre_process_images():
         if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
             print(f"preprocessing {t} images...")
             np.save(f"fingers/{t}_preprocessed.npy", np.array([
-                np.array(Image.open(f"fingers/{t}/{file}").resize((32, 32)).convert("RGB"))
+                np.array(
+                    Image.open(f"fingers/{t}/{file}").resize((32, 32)).convert(
+                        "RGB"))
                 for file in os.listdir(f"fingers/{t}")
             ]))
+        else:
+            print(f"preprocessed {t} images already exist")
+            continue
+
+
+def noisify_images():
+    # check if preprocessed images already exist
+    for t in ["test", "train"]:
+        if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
+            print(f"preprocessing {t} images...")
+            images = np.array([Image.open(f"fingers/{t}/{file}").convert("RGB")
+                               for file in os.listdir(f"fingers/{t}")])
+            blur = random.sample(range(0, len(images)), len(images) // 4)
+            rotate = random.sample(range(0, len(images)), len(images) // 2)
+            moldy = random.sample(range(0, len(images)), len(images) // 3)
+            for n in blur:
+                images[n] = images[n].filter(ImageFilter.GaussianBlur(5))
+            for n in rotate:
+                rand_num = random.randint(1, 3)
+                if rand_num == 1:
+                    images[n] = images[n].rotate(90)
+                elif rand_num == 2:
+                    images[n] = images[n].rotate(180)
+                elif rand_num == 3:
+                    images[n] = images[n].rotate(270)
+            for n in moldy:
+                images[n] = images[n].filter(
+                    ImageFilter.Kernel((3, 3), (-1/ -5, 2/ -5, -2/ -5, 3/ -5, -5/ -5, 5/ -5, -7/ -5, 7/ -5, -7/ -5)))
+
+            for i in range(10):
+                plt.imshow(images[random.randrange(0, len(images), 1)])
+                plt.show()
+            np.save(f"fingers/{t}_preprocessed.npy",
+                    np.array([np.array(im.resize((32, 32))) for im in images]))
         else:
             print(f"preprocessed {t} images already exist")
             continue

@@ -86,15 +86,16 @@ def main():
     print("size of test set: {0}".format(len(os.listdir('fingers/test'))))
     print("size of train set: {0}".format(len(os.listdir('fingers/train'))))
     dp.get_labels()
-    dp.pre_process_images()
+    # dp.pre_process_images()
+    dp.noisify_images()
     dp.test()
     # cnn_single()
-    cnn_multi()
+    # cnn_multi()
 
     train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
-    # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
+    svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
     # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
-    svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
+    # svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
 if __name__ == '__main__':
