@@ -36,7 +36,12 @@ def cnn_multi(epochs=5, dimension=32):
     hand_pred = y_pred[1].argmax(axis=-1)
     print(num_pred)
     print(hand_pred)
-    # cm = confusion_matrix(test_labels, y_pred)
+    ConfusionMatrixDisplay(confusion_matrix(test_num_labels, num_pred),
+                           display_labels=['0', '1', '2', '3', '4', '5']).plot()
+    plt.show()
+    ConfusionMatrixDisplay(confusion_matrix(test_hand_labels, hand_pred),
+                           display_labels=['0', '1']).plot()
+    plt.show()
 
 
 def cnn_single(epochs=5, dimension=32):
@@ -61,6 +66,10 @@ def cnn_single(epochs=5, dimension=32):
 
     cnn.evaluate(test_images, test_labels)
     y_pred = cnn.model.predict(test_images)
+    ConfusionMatrixDisplay(confusion_matrix(test_labels, y_pred),
+                           display_labels=['0L', '0R', '1L', '1R', '2L', '2R',
+                                           '3L', '3R', '4R', '4L', '5L', '5R']).plot()
+    plt.show()
     print('testing')
 
 
