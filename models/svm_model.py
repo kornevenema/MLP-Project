@@ -5,7 +5,7 @@ from sklearn import svm, metrics
 class svm_baseline:
 
     def __init__(self, kernel="linear", **kwargs):
-        self.classifier = svm.SVC(kernel=kernel, **kwargs)
+        self.classifier = svm.SVC(kernel=kernel, verbose=True, **kwargs)
         self.preds = None
 
     def fit(self, train_features, train_labels):

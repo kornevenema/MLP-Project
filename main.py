@@ -8,7 +8,8 @@ from models.svm_model import svm_baseline
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
-def cnn_multi():
+
+def cnn_multi(epochs=5, dimension=32):
     train_images = np.load('fingers/train_preprocessed.npy')
     test_images = np.load('fingers/test_preprocessed.npy')
     train_labels = np.load('labels/train_classes.npy')
@@ -19,18 +20,18 @@ def cnn_multi():
     test_num_labels = test_labels[:, 0]
     test_hand_labels = test_labels[:, 1]
 
-    cnn = MultiOutputCNN(32)
+    cnn = MultiOutputCNN(dimension)
     cnn.add_layers()
     cnn.add_outputs()
     cnn.model.summary()
     cnn.compile(loss={'num': 'sparse_categorical_crossentropy', 'hand': 'sparse_categorical_crossentropy'}, metrics={'num': 'accuracy', 'hand': 'accuracy'})
-    cnn.train(train_images, {'num': train_num_labels, 'hand': train_hand_labels}, test_images, {'num': test_num_labels, 'hand': test_hand_labels}, 2)
+    cnn.train(train_images, {'num': train_num_labels, 'hand': train_hand_labels}, test_images, {'num': test_num_labels, 'hand': test_hand_labels}, epochs)
     cnn.evaluate(test_images, {'num': test_num_labels, 'hand': test_hand_labels})
     # y_pred = cnn.predict(test_images)
     # cm = confusion_matrix(test_labels, y_pred)
 
 
-def cnn_single():
+def cnn_single(epochs=5, dimension=32):
     train_images = np.load('fingers/train_preprocessed.npy')
     test_images = np.load('fingers/test_preprocessed.npy')
     train_labels = np.load('labels/train_classes.npy')
@@ -39,12 +40,12 @@ def cnn_single():
     train_labels = train_labels[:, 2]
     test_labels = test_labels[:, 2]
 
-    cnn = SingleOutputCNN(32)
+    cnn = SingleOutputCNN(dimension)
     cnn.add_layers()
     cnn.add_outputs()
     cnn.model.summary()
     cnn.compile(loss='sparse_categorical_crossentropy', metrics='accuracy')
-    cnn.train(train_images, train_labels, test_images, test_labels, 2)
+    cnn.train(train_images, train_labels, test_images, test_labels, epochs)
     cnn.evaluate(test_images, test_labels)
     print('testing')
 
@@ -58,7 +59,7 @@ def flatten_data():
 
     flat_test_data = np.array([d.flatten() for d in test_data])
     flat_train_data = np.array([d.flatten() for d in train_data])
-
+    # print(flat_test_data.shape, flat_train_data.shape)
     return train_labels, test_labels, flat_train_data, flat_test_data
 
 

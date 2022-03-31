@@ -97,9 +97,9 @@ def noisify_images():
                 images[n] = images[n].filter(
                     ImageFilter.Kernel((3, 3), (-1/ -5, 2/ -5, -2/ -5, 3/ -5, -5/ -5, 5/ -5, -7/ -5, 7/ -5, -7/ -5)))
 
-            for i in range(10):
-                plt.imshow(images[random.randrange(0, len(images), 1)])
-                plt.show()
+            # for i in range(10):
+            #     plt.imshow(images[random.randrange(0, len(images), 1)])
+            #     plt.show()
             np.save(f"fingers/{t}_preprocessed.npy",
                     np.array([np.array(im.resize((32, 32))) for im in images]))
         else:
