@@ -8,7 +8,6 @@ from models.svm_model import svm_baseline
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
-
 def cnn_multi(epochs=5, dimension=32):
     train_images = np.load('fingers/train_preprocessed.npy')
     test_images = np.load('fingers/test_preprocessed.npy')
@@ -21,13 +20,22 @@ def cnn_multi(epochs=5, dimension=32):
     test_hand_labels = test_labels[:, 1]
 
     cnn = MultiOutputCNN(dimension)
-    cnn.add_layers()
-    cnn.add_outputs()
-    cnn.model.summary()
-    cnn.compile(loss={'num': 'sparse_categorical_crossentropy', 'hand': 'sparse_categorical_crossentropy'}, metrics={'num': 'accuracy', 'hand': 'accuracy'})
-    cnn.train(train_images, {'num': train_num_labels, 'hand': train_hand_labels}, test_images, {'num': test_num_labels, 'hand': test_hand_labels}, epochs)
+    if os.path.isdir('models/saved/multi'):
+        cnn.load()
+    else:
+        cnn.add_layers()
+        cnn.add_outputs()
+        cnn.model.summary()
+        cnn.compile(loss={'num': 'sparse_categorical_crossentropy', 'hand': 'sparse_categorical_crossentropy'}, metrics={'num': 'accuracy', 'hand': 'accuracy'})
+        cnn.train(train_images, {'num': train_num_labels, 'hand': train_hand_labels}, test_images, {'num': test_num_labels, 'hand': test_hand_labels}, epochs)
+        cnn.save()
+
     cnn.evaluate(test_images, {'num': test_num_labels, 'hand': test_hand_labels})
-    # y_pred = cnn.predict(test_images)
+    y_pred = cnn.model.predict(test_images)
+    num_pred = y_pred[0].argmax(axis=-1)
+    hand_pred = y_pred[1].argmax(axis=-1)
+    print(num_pred)
+    print(hand_pred)
     # cm = confusion_matrix(test_labels, y_pred)
 
 
@@ -41,12 +49,18 @@ def cnn_single(epochs=5, dimension=32):
     test_labels = test_labels[:, 2]
 
     cnn = SingleOutputCNN(dimension)
-    cnn.add_layers()
-    cnn.add_outputs()
-    cnn.model.summary()
-    cnn.compile(loss='sparse_categorical_crossentropy', metrics='accuracy')
-    cnn.train(train_images, train_labels, test_images, test_labels, epochs)
+    if os.path.isdir('models/saved/single'):
+        cnn.load()
+    else:
+        cnn.add_layers()
+        cnn.add_outputs()
+        cnn.model.summary()
+        cnn.compile(loss='sparse_categorical_crossentropy', metrics='accuracy')
+        cnn.train(train_images, train_labels, test_images, test_labels, epochs)
+        cnn.save()
+
     cnn.evaluate(test_images, test_labels)
+    y_pred = cnn.model.predict(test_images)
     print('testing')
 
 
@@ -109,10 +123,10 @@ def main():
     # dp.pre_process_images()
     dp.noisify_images()
     dp.test()
-    # cnn_single()
+    cnn_single()
     # cnn_multi()
-    train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
-    svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
+    # train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
+    # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
     # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
     # svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 

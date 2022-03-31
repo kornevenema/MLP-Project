@@ -14,6 +14,7 @@ class MultiOutputCNN(CommonModel):
 
     def __init__(self, image_size: int, optimizer='adam'):
         super().__init__(image_size, optimizer)
+        self.save_location = 'models/saved/multi'
 
     def add_outputs(self):
         num_out = layers.Dense(6, activation='softmax', name='num')(self.bottleneck)
