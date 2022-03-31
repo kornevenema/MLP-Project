@@ -30,9 +30,26 @@ def get_labels():
                 both.append(item)
                 fingers.append(list(item)[0])
                 hand.append(list(item)[1])
-            fingers = LabelEncoder().fit(fingers).transform(fingers)
-            hand = LabelEncoder().fit(hand).transform(hand)
-            both = LabelEncoder().fit(both).transform(both)
+
+            # transform fingers
+            fingers_enc = LabelEncoder().fit(fingers)
+            fingers = fingers_enc.transform(fingers)
+
+            # transform hand
+            hand_enc = LabelEncoder().fit(hand)
+            hand = hand_enc.transform(hand)
+
+            # transform both labels
+            both_enc = LabelEncoder().fit(both)
+            both = both_enc.transform(both)
+
+            if t == "train":
+                print("fingers mapping:    ", end=" ")
+                print({l: i for i, l in enumerate(fingers_enc.classes_)})
+                print("hand mapping:       ", end=" ")
+                print({l: i for i, l in enumerate(hand_enc.classes_)})
+                print("both labels mapping:", end=" ")
+                print({l: i for i, l in enumerate(both_enc.classes_)})
             out = np.column_stack((fingers, hand, both))
             np.save(f'labels/{t}_classes.npy', out)
         else:
