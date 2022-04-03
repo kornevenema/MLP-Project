@@ -1,10 +1,12 @@
 import os
+import random
 import numpy as np
 import matplotlib.pyplot as plt
 import app.data_processing as dp
 from models.cnn_multi_output import MultiOutputCNN
 from models.cnn_single_output import SingleOutputCNN
 from models.svm_model import svm_baseline
+from models.decision_model import DecisionTreeBaseline
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
@@ -116,20 +118,21 @@ def svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
     plt.show()
 
 
-def svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
+def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
     # Runs svm for 2 labels
-    svm = svm_baseline()
-    svm.fit(flat_train_data, train_labels[:, 1])
-    svm.predict(flat_test_data)
-    print(svm.report_scores(test_labels[:, 1]))
+    tree = DecisionTreeBaseline()
+    tree.fit(flat_train_data, train_labels[:, 1])
+    tree.predict(flat_test_data)
+    print(tree.report_scores(test_labels[:, 1]))
     # print confusion matrix
-    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 1], svm.preds),
+    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 1], tree.preds),
                            display_labels=['L', 'R']).plot()
-    plt.title('SVM handedness Confusion Matrix')
+    plt.title('Decision Tree handedness Confusion Matrix')
     plt.show()
 
 
 def main():
+    random.seed('randomise')
     # print(dp.delete_old_files())
     print("size of test set: {0}".format(len(os.listdir('fingers/test'))))
     print("size of train set: {0}".format(len(os.listdir('fingers/train'))))
@@ -138,11 +141,11 @@ def main():
     dp.noisify_images()
     dp.test()
     # cnn_single()
-    # cnn_multi()
+    cnn_multi()
     train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
-    # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
-    # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
-    svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
+    svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
+    svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
+    tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
 if __name__ == '__main__':
