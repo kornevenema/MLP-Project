@@ -34,13 +34,15 @@ def cnn_multi(epochs=5, dimension=32):
     y_pred = cnn.model.predict(test_images)
     num_pred = y_pred[0].argmax(axis=-1)
     hand_pred = y_pred[1].argmax(axis=-1)
-    print(num_pred)
-    print(hand_pred)
+    # print(num_pred)
+    # print(hand_pred)
     ConfusionMatrixDisplay(confusion_matrix(test_num_labels, num_pred),
                            display_labels=['0', '1', '2', '3', '4', '5']).plot()
+    plt.title('Multi output CNN number of fingers Confusion Matrix')
     plt.show()
     ConfusionMatrixDisplay(confusion_matrix(test_hand_labels, hand_pred),
-                           display_labels=['0', '1']).plot()
+                           display_labels=['L', 'R']).plot()
+    plt.title('Multi output CNN handedness Confusion Matrix')
     plt.show()
 
 
@@ -65,12 +67,13 @@ def cnn_single(epochs=5, dimension=32):
         cnn.save()
 
     cnn.evaluate(test_images, test_labels)
-    y_pred = cnn.model.predict(test_images)
+    y_pred = cnn.model.predict(test_images).argmax(axis=-1)
     ConfusionMatrixDisplay(confusion_matrix(test_labels, y_pred),
                            display_labels=['0L', '0R', '1L', '1R', '2L', '2R',
                                            '3L', '3R', '4R', '4L', '5L', '5R']).plot()
+    plt.title('Single output CNN Confusion Matrix')
     plt.show()
-    print('testing')
+    # print('testing')
 
 
 def flatten_data():
@@ -96,6 +99,7 @@ def svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data
     ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 2], svm.preds),
                            display_labels=['0L', '0R', '1L', '1R', '2L', '2R',
                                            '3L', '3R', '4R', '4L', '5L', '5R']).plot()
+    plt.title('12 class SVM Confusion Matrix')
     plt.show()
 
 
@@ -105,10 +109,10 @@ def svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
     svm.fit(flat_train_data, train_labels[:, 0])
     svm.predict(flat_test_data)
     print(svm.report_scores(test_labels[:, 0]))
-    print(svm.report_scores(test_labels[:, 2]))
     # print confusion matrix
-    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 2], svm.preds),
+    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 0], svm.preds),
                            display_labels=['0', '1', '2', '3', '4', '5']).plot()
+    plt.title('SVM number of fingers Confusion Matrix')
     plt.show()
 
 
@@ -119,8 +123,9 @@ def svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
     svm.predict(flat_test_data)
     print(svm.report_scores(test_labels[:, 1]))
     # print confusion matrix
-    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 2], svm.preds),
+    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 1], svm.preds),
                            display_labels=['L', 'R']).plot()
+    plt.title('SVM handedness Confusion Matrix')
     plt.show()
 
 
@@ -132,12 +137,12 @@ def main():
     # dp.pre_process_images()
     dp.noisify_images()
     dp.test()
-    cnn_single()
+    # cnn_single()
     # cnn_multi()
-    # train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
+    train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
     # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
     # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
-    # svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
+    svm_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
 if __name__ == '__main__':
