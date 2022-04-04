@@ -7,7 +7,7 @@ from models.cnn_multi_output import MultiOutputCNN
 from models.cnn_single_output import SingleOutputCNN
 from models.svm_model import svm_baseline
 from models.decision_model import DecisionTreeBaseline
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score
 
 
 def cnn_multi(epochs=5, dimension=32):
@@ -47,6 +47,9 @@ def cnn_multi(epochs=5, dimension=32):
     plt.title('Multi output CNN handedness Confusion Matrix')
     plt.show()
 
+    print("Macro avg f1 score for numbers: {}".format(f1_score(test_num_labels, num_pred, average="macro")))
+    print("Macro avg f1 score for handedness: {}".format(f1_score(test_hand_labels, hand_pred, average="macro")))
+
 
 def cnn_single(epochs=5, dimension=32):
     train_images = np.load('fingers/train_preprocessed.npy')
@@ -76,6 +79,7 @@ def cnn_single(epochs=5, dimension=32):
     plt.title('Single output CNN Confusion Matrix')
     plt.show()
     # print('testing')
+    print("Macro avg f1 score for single output: {}".format(f1_score(test_labels, y_pred, average="macro")))
 
 
 def flatten_data():
@@ -104,6 +108,8 @@ def svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data
     plt.title('12 class SVM Confusion Matrix')
     plt.show()
 
+    print("Macro avg f1 score for single output SVM: {}".format(svm.f1_score(test_labels[:, 2])))
+
 
 def svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
     # Runs svm for 6 labels
@@ -116,6 +122,8 @@ def svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
                            display_labels=['0', '1', '2', '3', '4', '5']).plot()
     plt.title('SVM number of fingers Confusion Matrix')
     plt.show()
+
+    print("Macro avg f1 score for numbers SVM: {}".format(svm.f1_score(test_labels[:, 0])))
 
 
 def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
@@ -130,6 +138,8 @@ def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
     plt.title('Decision Tree handedness Confusion Matrix')
     plt.show()
 
+    print("Macro avg f1 score for handedness DT: {}".format(f1_score(test_labels[:, 1], tree.preds, average="macro")))
+
 
 def main():
     random.seed('randomise')
@@ -141,7 +151,7 @@ def main():
     dp.noisify_images()
     dp.test()
     # cnn_single()
-    cnn_multi()
+    # cnn_multi()
     train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
     svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
     svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)

@@ -16,3 +16,6 @@ class svm_baseline:
 
     def report_scores(self, true_labels):
         return metrics.classification_report(true_labels, self.preds)
+
+    def f1_score(self, true_labels):
+        return metrics.f1_score(true_labels, self.preds, average="macro")
