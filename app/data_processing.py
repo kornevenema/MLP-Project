@@ -1,8 +1,8 @@
 import random
+random.seed('randomise')
 
 import numpy as np
 from PIL import Image, ImageFilter
-import matplotlib.pyplot as plt
 import os
 from sklearn.preprocessing import LabelEncoder
 

@@ -142,7 +142,6 @@ def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
 
 
 def main():
-    random.seed('randomise')
     # print(dp.delete_old_files())
     print("size of test set: {0}".format(len(os.listdir('fingers/test'))))
     print("size of train set: {0}".format(len(os.listdir('fingers/train'))))
