@@ -14,3 +14,6 @@ class DecisionTreeBaseline:
 
     def report_scores(self, true_labels):
         return metrics.classification_report(true_labels, self.preds)
+
+    def print_tree(self):
+        tree.plot_tree(self.classifier)

@@ -139,6 +139,8 @@ def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
     plt.show()
 
     print("Macro avg f1 score for handedness DT: {}".format(f1_score(test_labels[:, 1], tree.preds, average="macro")))
+    tree.print_tree()
+    plt.show()
 
 
 def main():
@@ -152,8 +154,8 @@ def main():
     # cnn_single()
     # cnn_multi()
     train_labels, test_labels, flat_train_data, flat_test_data = flatten_data()
-    svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
-    svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
+    # svm_single_output(train_labels, test_labels, flat_train_data, flat_test_data)
+    # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
     tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
