@@ -5,12 +5,14 @@ import numpy as np
 from PIL import Image, ImageFilter
 import os
 from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
 
 
 def get_labels():
     # check if finger images are present
     if not os.path.isdir("fingers/test") or \
-            not os.path.isdir("fingers/train"):
+            not os.path.isdir("fingers/train") or \
+            not os.path.isdir("fingers/customtest"):
         print("train and test data is not present")
         return
 
@@ -19,7 +21,7 @@ def get_labels():
         os.mkdir("labels")
 
     # create test and train labels
-    for t in ["test", "train"]:
+    for t in ["test", "train", "customtest"]:
         if not os.path.isfile(f"labels/{t}_classes.npy"):
             print(f"getting labels from {t} images")
             fingers = []
@@ -59,7 +61,7 @@ def get_labels():
 
 def pre_process_images():
     # check if preprocessed images already exist
-    for t in ["test", "train"]:
+    for t in ["test", "train", "customtest"]:
         if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
             print(f"preprocessing {t} images...")
             np.save(f"fingers/{t}_preprocessed.npy", np.array([
@@ -75,7 +77,7 @@ def pre_process_images():
 
 def noisify_images():
     # check if preprocessed images already exist
-    for t in ["test", "train"]:
+    for t in ["test", "train", "customtest"]:
         if not os.path.isfile(f"fingers/{t}_preprocessed.npy"):
             print(f"preprocessing {t} images...")
             images = np.array([Image.open(f"fingers/{t}/{file}").convert("RGB")

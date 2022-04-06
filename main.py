@@ -10,7 +10,7 @@ from models.decision_model import DecisionTreeBaseline
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score
 
 
-def get_data_from_files(flatten=False):
+def get_data_from_files(flatten=False, custom=False):
     """
     get the images and labels
     :param flatten: choose if you want to flatten data, only needed for baseline
@@ -18,9 +18,14 @@ def get_data_from_files(flatten=False):
     """
     # get data
     train_data = np.load("fingers/train_preprocessed.npy")
-    test_data = np.load("fingers/test_preprocessed.npy")
     train_labels = np.load("labels/train_classes.npy")
-    test_labels = np.load("labels/test_classes.npy")
+    if custom:
+        test_data = np.load("fingers/customtest_preprocessed.npy")
+        test_labels = np.load("labels/customtest_classes.npy")
+    else:
+        test_data = np.load("fingers/test_preprocessed.npy")
+        test_labels = np.load("labels/test_classes.npy")
+
     if flatten:
         # flatten images
         flat_test_data = np.array([d.flatten() for d in test_data])
@@ -48,7 +53,7 @@ def get_display_labels(t="both"):
 
 def cnn_multi(epochs=5, dimension=32):
     # get data
-    train_labels, test_labels, train_images, test_images = get_data_from_files()
+    train_labels, test_labels, train_images, test_images = get_data_from_files(custom=False)
 
     # separate numbers and fingers
     train_num_labels = train_labels[:, 0]
@@ -95,7 +100,7 @@ def cnn_multi(epochs=5, dimension=32):
 
 
 def cnn_single(epochs=5, dimension=32):
-    train_labels, test_labels, train_images, test_images = get_data_from_files()
+    train_labels, test_labels, train_images, test_images = get_data_from_files(custom=False)
 
     train_labels = train_labels[:, 2]
     test_labels = test_labels[:, 2]
@@ -183,11 +188,11 @@ def main():
     # cnn_single()
     # cnn_multi()
     train_labels, test_labels, flat_train_data, flat_test_data = \
-        get_data_from_files(True)
+        get_data_from_files(True, custom=False)
     svm_single_output(train_labels, test_labels, flat_train_data,
                       flat_test_data)
-    svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
-    tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
+    # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
+    # tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
 if __name__ == '__main__':
