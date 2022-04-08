@@ -160,6 +160,23 @@ def svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
         svm.f1_score(test_labels[:, 0])))
 
 
+def tree_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data):
+    # Runs svm for 2 labels
+    tree = DecisionTreeBaseline()
+    tree.fit(flat_train_data, train_labels[:, 0])
+    tree.predict(flat_test_data)
+    print(tree.report_scores(test_labels[:, 0]))
+    # print confusion matrix
+    ConfusionMatrixDisplay(confusion_matrix(test_labels[:, 0], tree.preds),
+                           display_labels=get_display_labels("fingers")).plot()
+    plt.title('Decision Tree number of fingers Confusion Matrix')
+    plt.show()
+
+    print("Macro avg f1 score for numbers DT: {}".format(f1_score(test_labels[:, 0], tree.preds, average="macro")))
+    tree.print_tree()
+    plt.show()
+
+
 def tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data):
     # Runs svm for 2 labels
     tree = DecisionTreeBaseline()
@@ -189,9 +206,10 @@ def main():
     # cnn_multi()
     train_labels, test_labels, flat_train_data, flat_test_data = \
         get_data_from_files(True, custom=False)
-    svm_single_output(train_labels, test_labels, flat_train_data,
-                      flat_test_data)
+    # svm_single_output(train_labels, test_labels, flat_train_data,
+    #                   flat_test_data)
     # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
+    tree_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
     # tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
