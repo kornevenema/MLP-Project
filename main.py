@@ -202,14 +202,14 @@ def main():
     # dp.pre_process_images()
     dp.noisify_images()
     dp.test()
-    # cnn_single()
-    # cnn_multi()
-    train_labels, test_labels, flat_train_data, flat_test_data = \
-        get_data_from_files(True, custom=False)
+    # cnn_single(epochs=20)
+    cnn_multi(epochs=20)
+    # train_labels, test_labels, flat_train_data, flat_test_data = \
+    #     get_data_from_files(True, custom=False)
     # svm_single_output(train_labels, test_labels, flat_train_data,
     #                   flat_test_data)
     # svm_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
-    tree_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
+    # tree_num_fingers(train_labels, test_labels, flat_train_data, flat_test_data)
     # tree_handedness(train_labels, test_labels, flat_train_data, flat_test_data)
 
 
